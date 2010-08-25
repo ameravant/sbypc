@@ -10,9 +10,9 @@ module ProfileExt
   end
   module InstanceMethods
     def confirmation_and_newsletter
+      self.person.update_attributes(:confirmed => false)
       group = PersonGroup.find_or_create_by_title("Newsletter")
       self.person.person_group_ids = self.person.person_group_ids << group.id
-      self.person.confirmed = false
       self.save
     end
   end
