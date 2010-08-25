@@ -4,13 +4,16 @@ module ProfileExt
   end
   module ClassMethods
     def profile_ext
-      after_create :make_person_unconfirmed
+      after_create :confirmation_and_newsletter
       include ProfileExt::InstanceMethods
     end
   end
   module InstanceMethods
-    def make_person_unconfirmed
-      self.person.update_attributes(:confirmed => false)
+    def confirmation_and_newsletter
+      group = PersonGroup.find_or_create_by_title("Newsletter")
+      self.person.person_group_ids = self.person.person_group_ids << group.id
+      self.confirmed = false
+      self.save
     end
   end
 end
