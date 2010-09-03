@@ -32,7 +32,8 @@ module ProfileExt
   def group_membership_check
     ids_for_person = self.person_group_ids
     for state in ["confirmed", "unconfirmed"]
-      group = PersonGroup.find_or_create_by_title("#{state.capitalize} Profiles")
+      group = PersonGroup.find_or_create_by_title("#{state.capitalize} Profiles", :public => false)
+      group.update_attributes(:public => false) if group.public
       if self.send(state.downcase.to_sym)
         self.person_group_ids = self.person_group_ids << group.id
       end
