@@ -8,6 +8,7 @@ module ProfileExt
       include ProfileExt::InstanceMethods
     end
     def person_ext
+      before_validation :check_for_invalid_imports
       after_save :group_membership_check
       include ProfileExt::InstanceMethods
     end
@@ -42,6 +43,12 @@ module ProfileExt
       end
     end
     self.save unless ids_for_person == self.person_group_ids
+  end
+  def check_for_invalid_imports
+    if !self.new_record? && self.created_at.blank?
+      self.last_name ||= "Guest"
+      self.created_at = Person.find(self.id + 1).created_at - 5.minutes
+    end
   end
 end
 ActiveRecord::Base.send(:include, ProfileExt)
