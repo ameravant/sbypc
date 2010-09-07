@@ -46,7 +46,7 @@ module ProfileExt
     def check_for_invalid_imports
       if !self.new_record? && self.created_at.blank?
         self.last_name ||= "Guest"
-        self.created_at = Person.find(self.id + 1).created_at - 5.minutes
+        self.created_at = (Person.find(self.id + 1).created_at || 1.week.ago) - 5.minutes
       end
     end
   end
